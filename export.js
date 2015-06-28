@@ -1,9 +1,9 @@
-var sprintf = require('util').format;
+var fmt = require('util').format;
 var insert = "INSERT INTO `chain` (link1,link2,n) VALUES ('%s','%s',%s);";
 function row(a, b, c) {
     a = a.replace(/\\/g, "\\\\").replace(/\'/g, "\\'");
     b = b.replace(/\\/g, "\\\\").replace(/\'/g, "\\'");
-    var out = sprintf(insert, a, b, c);
+    var out = fmt(insert, a, b, c);
     console.log(out);
 }
 
