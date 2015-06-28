@@ -38,15 +38,15 @@ module.exports = function (core) {
 
   // Log unhandled IRC errors.
   core.irc.on('error', function (err) {
-    console.log('[ERROR]', err);
+    console.log(err.stack);
   });
 
   // Log plugin errors.
   core.on('pluginError', function (err) {
-    console.log('[ERROR]', err);
+    console.log(err.stack);
   });
 
   process.on('uncaughtException', function (err) {
-    console.log('[ERROR]', err);
+    console.log(err.stack);
   });
 };
