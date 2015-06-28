@@ -3,3 +3,5 @@ node_modules
 core/01_private.js
 logs/*.html
 *.sqlite
+*.sql
+sqlite/

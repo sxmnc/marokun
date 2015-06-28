@@ -11,12 +11,7 @@
     "irc": "0.3.x",
     "lodash": "2.4.x",
     "node-watch": "0.3.x",
-    "moment": "2.6.x",
-    "request": "2.34.x",
-    "entities": "1.1.x",
-    "mathjs": "0.22.x",
-    "sqlite3": "2.2.x",
-    "xregexp": "2.0.x"
+    "moment": "2.6.x"
   },
   "devDependencies": {
     "grunt": "0.4.x",
