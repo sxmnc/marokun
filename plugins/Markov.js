@@ -1,9 +1,13 @@
 var _ = require('lodash');
-var sql = require('sqlite3');
+var mysql = require('mysql');
 
 module.exports = function (core) {
     var plugin = {};
-    var db = new sql.Database('MarkovDB.sqlite');
+    var db = mysql.createConnection({
+        host: 'localhost',
+        user: 'root',
+        database: 'MarkovDB',
+    });
     var trigger = core.nickname;
 
     function getSeed(words) {
@@ -20,7 +24,7 @@ module.exports = function (core) {
     }
 
     function randomPhrase() {
-        db.all('SELECT * FROM chain', function (err, rows) {
+        db.query('SELECT * FROM chain', function (err, rows) {
             var index = _.random(0, rows.length - 1);
             var word = rows[index];
             if (word.link2 === ' ') {
@@ -34,7 +38,7 @@ module.exports = function (core) {
 
     function buildPhrase(seed, phrase) {
         phrase += seed[0] + " ";
-        db.all('SELECT * from chain WHERE link1 = ?', seed[1], function (err, rows) {
+        db.query('SELECT * from chain WHERE link1 = ?', seed[1], function (err, rows) {
             var index = _.random(0, rows.length - 1);
             var word = rows[index];
             if (word.link2 === ' ') {
@@ -49,7 +53,6 @@ module.exports = function (core) {
     }
 
     function pubListener(nick, text) {
-        console.log(trigger);
         if (core.util.containsIgnoreCase(text, trigger)) {
             var words = text.split(/[ ,]+/);
             buildPhrase(getSeed(words), '');

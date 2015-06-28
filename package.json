@@ -12,7 +12,8 @@
     "lodash": "2.4.x",
     "node-watch": "0.3.x",
     "moment": "2.6.x",
-    "sqlite3": "3.0.x"
+    "sqlite3": "3.0.x",
+    "mysql": "2.7.x"
   },
   "devDependencies": {
     "grunt": "0.4.x",
