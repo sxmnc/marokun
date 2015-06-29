@@ -5,36 +5,35 @@
 var path = require('path');
 
 module.exports = function (core, rootPath) {
+    var configFile = path.join(rootPath, 'config.js');
 
-  var configFile = path.join(rootPath, 'config.js');
+    core.config = {};
+    var initialLoad = true;
 
-  core.config = {};
-  var initialLoad = true;
+    // Reload the config file.
+    function reloadConfig() {
+        delete require.cache[configFile];
+        var config = require(configFile);
 
-  // Reload the config file.
-  function reloadConfig() {
-    delete require.cache[configFile];
-    var config = require(configFile);
-
-    if (initialLoad) {
-      core.server = config.core.server;
-      core.port = config.core.port;
-      core.channel = config.core.channel;
-      core.nickname = config.core.nickname;
-      core.realname = config.core.realname;
-      core.password = config.core.password;
-      core.operator = config.core.operator;
-      core.debug = config.core.debug;
+        if (initialLoad) {
+            core.server = config.core.server;
+            core.port = config.core.port;
+            core.channel = config.core.channel;
+            core.nickname = config.core.nickname;
+            core.realname = config.core.realname;
+            core.password = config.core.password;
+            core.operator = config.core.operator;
+            core.debug = config.core.debug;
+        }
+        delete config.core;
+        core.config = config;
     }
-    delete config.core;
-    core.config = config;
-  }
 
-  core.on('configChange', function () {
+    core.on('configChange', function () {
+        reloadConfig();
+        core.emit('configLoad');
+    });
+
     reloadConfig();
-    core.emit('configLoad');
-  });
-
-  reloadConfig();
-  initialLoad = false;
+    initialLoad = false;
 };

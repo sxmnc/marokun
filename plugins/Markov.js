@@ -17,7 +17,7 @@ module.exports = function (core) {
             seed = _.random(0, words.length - 2); // so we never get the last word.
             wordSeed = [words[seed], words[seed + 1]];
         } else {
-           randomPhrase();
+            randomPhrase();
         }
 
         return wordSeed;
