@@ -14,11 +14,5 @@
     "moment": "2.6.x",
     "sqlite3": "3.0.x",
     "mysql": "2.7.x"
-  },
-  "devDependencies": {
-    "grunt": "0.4.x",
-    "grunt-contrib-jshint": "0.10.x",
-    "grunt-jscs-checker": "0.4.x",
-    "jscs-trailing-comma": "0.1.x"
   }
 }
