@@ -86,6 +86,10 @@ module.exports = function (core) {
 
   // Check if a message matches an error code
   function verifyError(msg, errorId) {
+    // Messages like PING don't have a prefix
+    if (!msg.prefix) {
+        return false;
+    }
     // Somehow, the error event isn't fired for all errors
     var pmError = msg.commandType == 'normal' &&
         msg.prefix.match(/\w+\.freenode\.net/) &&
