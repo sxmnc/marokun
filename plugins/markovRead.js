@@ -1,53 +1,42 @@
-var sql = require('sqlite3');
-
 module.exports = function (core) {
     var plugin = {};
-    var db = new sql.Database('MarkovDB.sqlite');
-
-    function openDB() {
-        db.serialize(function () {
-            db.run('CREATE TABLE IF NOT EXISTS chain(link1 TEXT, link2 TEXT, n INT,'+
-                   ' CONSTRAINT pk_chain PRIMARY KEY (link1,link2))');
-        });
-    }
-
-    function closeDB() {
-        db.close();
-    }
-
-    function checkError(err) {
-        if (err)
-            console.log(err);
-    }
 
     function dbInsert(word1, word2) {
-        db.run('INSERT OR REPLACE INTO chain (link1,link2,n) '+
-               'VALUES ($one,$two,COALESCE(((SELECT n from chain WHERE '+
-               'link1 = $one AND link2 = $two) + 1),1))',
-                {$one: word1, $two: word2}, checkError);
+        var findMatch = "SELECT * FROM chain " +
+                        "WHERE (link1 = ? AND " +
+                               "link2 = ?) " +
+                        "LIMIT 1";
+        core.db.queryOrPass(findMatch, [word1, word2], function (rows) {
+            if (rows.length == 1) {
+                var match = rows[0];
+                var increment = "UPDATE chain " +
+                                "SET n = ? " +
+                                "WHERE id = ?";
+                core.db.queryOrPass(increment, [match.n + 1, match.id]);
+            } else {
+                var insert = "INSERT INTO chain (link1, link2, n) " +
+                             "VALUES (?, ?, ?)";
+                core.db.queryOrPass(insert, [word1, word2, 1]);
+            }
+        });
     }
 
     function pubListener(nick, text) {
        var words = text.split(/[ ,]+/);
-       var wordsLength = words.length;
-        if (wordsLength > 1) {
-            for (var i = 0; i < wordsLength -1; i++) {
-                var word1 = words[i];
-                var word2 = words[i + 1];
-                dbInsert(word1, word2);
+        if (words.length > 1) {
+            for (var i = 0; i < words.length - 1; i++) {
+                dbInsert(words[i], words[i + 1]);
             }
-            dbInsert(words[wordsLength - 1], ' ');
+            dbInsert(words[words.length - 1], ' ');
         }
     }
 
     plugin.load = function () {
-        openDB();
         core.irc.on('pub', pubListener);
     };
 
     plugin.unload = function () {
         core.irc.removeListener('pub', pubListener);
-        closeDB();
     };
 
     return plugin;

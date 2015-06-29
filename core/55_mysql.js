@@ -16,7 +16,9 @@ module.exports = function (core) {
                         console.log(err);
                         connection.destroy();
                     } else {
-                        cb(rows);
+                        if (cb) {
+                            cb(rows);
+                        }
                         connection.release();
                     }
                 });
