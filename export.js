@@ -1,3 +1,5 @@
+// Exports sqlite database to SQL INSERT statements
+
 var fmt = require('util').format;
 var insert = "INSERT INTO `chain` (link1,link2,n) VALUES ('%s','%s',%s);";
 
