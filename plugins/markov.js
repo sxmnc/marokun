@@ -11,7 +11,11 @@ module.exports = function (core) {
     });
 
     function buildPhrase(seed, phrase) {
-        phrase.push(seed[0]);
+        if (seed.length == 2) {
+            phrase.push(seed[0]);
+        } else {
+            seed[1] = seed[0];
+        }
 
         var selectNext = "SELECT * FROM chain " +
                          "WHERE link1 = ? " +
@@ -28,27 +32,10 @@ module.exports = function (core) {
                     buildPhrase(seed, phrase);
                 }
             } else {
-                console.log("buildPhrase fail");
-                console.log(phrase);
-            }
-        });
-    }
-
-    function randomSeedPhrase() {
-        var selectRandom = "SELECT * FROM chain " +
-                           "ORDER BY RAND() " +
-                           "LIMIT 1";
-        db.query(selectRandom, function (err, rows) {
-            if (rows.length === 1) {
-                var word = rows[0];
-                if (word.link2 === ' ') {
-                    randomSeedPhrase();
-                } else {
-                    var seed = [word.link1, word.link2];
-                    buildPhrase(seed, []);
+                phrase.push(seed[1]);
+                if (phrase.length > 2) {
+                    core.irc.sayPub(phrase.join(" "));
                 }
-            } else {
-                console.log("randomSeedPhrase fail");
             }
         });
     }
@@ -63,7 +50,7 @@ module.exports = function (core) {
         if (words.length > 2) {
             buildPhrase(getSeed(words), []);
         } else {
-            randomSeedPhrase();
+            buildPhrase(words, []);
         }
     }
 
