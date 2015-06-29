@@ -1,7 +1,3 @@
 node_modules
-
 core/01_private.js
-
 sqlite/
-*.sqlite
-*.sql
