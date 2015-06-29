@@ -1,14 +1,7 @@
 var _ = require('lodash');
-var mysql = require('mysql');
 
 module.exports = function (core) {
     var plugin = {};
-
-    var db = mysql.createConnection({
-        host: 'localhost',
-        user: 'root',
-        database: 'MarkovDB',
-    });
 
     function buildPhrase(seed, phrase) {
         if (seed.length == 2) {
@@ -21,7 +14,7 @@ module.exports = function (core) {
                          "WHERE link1 = ? " +
                          "ORDER BY RAND() " +
                          "LIMIT 1";
-        db.query(selectNext, seed[1], function (err, rows) {
+        core.db.queryOrPass(selectNext, seed[1], function (rows) {
             if (rows.length === 1) {
                 var word = rows[0];
                 if (word.link2 === ' ') {
