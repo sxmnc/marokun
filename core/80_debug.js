@@ -4,7 +4,6 @@
 var _ = require('lodash');
 
 module.exports = function (core) {
-
     // Log received IRC activity.
     core.irc.on('raw', function (msg) {
         if (core.debug) {
