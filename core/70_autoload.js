@@ -1,17 +1,17 @@
 // This module sets up plugin autoloading. Plugins are loaded when
 // a JavaScript file in `plugins/` has changed.
 
-var fs = require('fs');
-var path = require('path');
+var fs = require("fs");
+var path = require("path");
 
-var _ = require('lodash');
-var glob = require('glob');
-var watch = require('node-watch');
+var _ = require("lodash");
+var glob = require("glob");
+var watch = require("node-watch");
 
 module.exports = function (core, rootPath) {
-    var pluginsDir = path.join(rootPath, 'plugins');
-    var pluginsGlob = path.join(pluginsDir, '*.js');
-    var configFile = path.join(rootPath, 'config.js');
+    var pluginsDir = path.join(rootPath, "plugins");
+    var pluginsGlob = path.join(pluginsDir, "*.js");
+    var configFile = path.join(rootPath, "config.js");
 
     core.plugins = {};
 
@@ -22,9 +22,9 @@ module.exports = function (core, rootPath) {
             }
             delete core.plugins[path];
             delete require.cache[path];
-            core.emit('pluginUnload', path);
+            core.emit("pluginUnload", path);
         } catch (err) {
-            core.emit('pluginError', err);
+            core.emit("pluginError", err);
         }
     }
 
@@ -35,9 +35,9 @@ module.exports = function (core, rootPath) {
             if (_.isFunction(core.plugins[path].load)) {
                 core.plugins[path].load();
             }
-            core.emit('pluginLoad', path);
+            core.emit("pluginLoad", path);
         } catch (err) {
-            core.emit('pluginError', err);
+            core.emit("pluginError", err);
         }
     }
 
@@ -58,17 +58,17 @@ module.exports = function (core, rootPath) {
 
     // Watch the config file.
     watch(configFile, function (path) {
-        core.emit('configChange');
+        core.emit("configChange");
     });
 
     // Unload all plugins on exit.
     function killListener() {
-        _.invoke(core.plugins, 'unload');
+        _.invoke(core.plugins, "unload");
         setTimeout(function () {
             process.exit(128);
         }, 250);
     }
 
-    process.on('SIGINT', killListener);
-    process.on('SIGTERM', killListener);
+    process.on("SIGINT", killListener);
+    process.on("SIGTERM", killListener);
 };

@@ -20,7 +20,7 @@ module.exports = function (core) {
             var argsArray = argsString.match(/"[^"]+"|\s?\w+\s?/g);
 
             argsArray.forEach (function (arg, index, array) {
-                array[index] = arg.trim().replace(/"/g, '');
+                array[index] = arg.trim().replace(/"/g, "");
             });
 
             return argsArray;
