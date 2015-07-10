@@ -5,9 +5,8 @@ module.exports = {
         channel: '#SexManiac',
 
         nickname: 'Maro-kun',
-        password: '********',
         realname: '<3',
-        operator: false,
+        password: '********',
 
         debug: true,
     },
