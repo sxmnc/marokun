@@ -3,9 +3,10 @@
     "description": "describe how far le UI sale quart fait pi conneriesQC",
     "version": "0.9.0",
     "license": "GPL-3.0",
+    "private": true,
     "repository": {
         "type": "git",
-        "url": "https://github.com/marokun/marokun"
+        "url": "https://github.com/sxmnc/marokun"
     },
     "dependencies": {
         "glob": "3.2.x",
@@ -13,7 +14,6 @@
         "lodash": "2.4.x",
         "node-watch": "0.3.x",
         "moment": "2.6.x",
-        "sqlite3": "3.0.x",
         "mysql": "2.7.x"
     }
 }
