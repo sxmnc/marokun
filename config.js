@@ -16,4 +16,12 @@ module.exports = {
         user: 'root',
         database: 'MarkovDB',
     },
+    pgsql: {
+        host: 'localhost',
+        database: 'markovdb',
+        port: 5433,
+		user: 'maro-kun',
+        password: ':^)',
+        max: 10,
+	},
 };

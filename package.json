@@ -12,8 +12,9 @@
         "glob": "3.2.x",
         "irc": "0.3.x",
         "lodash": "2.4.x",
-        "node-watch": "0.3.x",
         "moment": "2.6.x",
-        "mysql": "2.7.x"
+        "mysql": "2.7.x",
+        "node-watch": "0.3.x",
+        "pg": "^7.4.3"
     }
 }
