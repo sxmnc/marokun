@@ -21,7 +21,6 @@ module.exports = {
         database: 'markovdb',
         port: 5433,
 		user: 'maro-kun',
-        password: ':^)',
         max: 10,
 	},
 };
