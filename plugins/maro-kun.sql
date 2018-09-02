@@ -77,16 +77,12 @@ CREATE OR REPLACE FUNCTION build_sentence(seed1 text, seed2 text) RETURNS SETOF 
 	SELECT markov.link1 FROM markov_chain(seed2, 25) as markov(link1)
 $SQL$ LANGUAGE SQL VOLATILE
 
-CREATE OR REPLACE FUNCTION record_and_return(sentence text, cue text) RETURNS SETOF text AS $SQL$
-	-- Not as clean as the other ones, but it does the job, I guess.
-	WITH recorded AS (SELECT link1, link2 FROM record_sentence(sentence) WHERE link2 <> ' ')
+CREATE OR REPLACE FUNCTION record_and_generate(sentence text, generateReply bool) RETURNS SETOF text AS $SQL$
+	WITH recorded AS (SELECT link1, link2 FROM record_sentence(sentence) WHERE link2 <> ' ' AND generateReply)
 	SELECT build_sentence(t.link1, t.link2) FROM (
 		SELECT link1, link2 FROM recorded
-		WHERE EXISTS (SELECT 1 FROM recorded WHERE lower(link1) = lower(cue))
 		ORDER BY random() LIMIT 1
 	) t
 $SQL$ LANGUAGE SQL VOLATILE
 
---SELECT * FROM record_and_return('Also, I thought it was case-insensitive and ignored punctuation', 'Maro-Kun');
---SELECT * FROM record_and_return('Also, I thought Maro-Kun was case-insensitive and ignored punctuation', 'Maro-Kun');
-
+--SELECT * FROM record_and_generate('Also, I thought it was case-insensitive and ignored punctuation', FALSE);
