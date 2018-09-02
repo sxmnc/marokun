@@ -41,7 +41,7 @@ CREATE OR REPLACE FUNCTION weighted_next_word(word text, random double precision
 		FROM chain
 		WHERE link1 = word
 	) t WHERE roll <= rank LIMIT 1
-$SQL$ LANGUAGE SQL STABLE
+$SQL$ LANGUAGE SQL STABLE;
 
 -- Will not get inlined because random() is a volatile argument
 --SELECT * FROM weighted_next_word('in', random())
@@ -75,14 +75,16 @@ CREATE OR REPLACE FUNCTION build_sentence(seed1 text, seed2 text) RETURNS SETOF 
 	SELECT seed1
 	UNION ALL
 	SELECT markov.link1 FROM markov_chain(seed2, 25) as markov(link1)
-$SQL$ LANGUAGE SQL VOLATILE
+$SQL$ LANGUAGE SQL VOLATILE;
 
 CREATE OR REPLACE FUNCTION record_and_generate(sentence text, generateReply bool) RETURNS SETOF text AS $SQL$
-	WITH recorded AS (SELECT link1, link2 FROM record_sentence(sentence) WHERE link2 <> ' ' AND generateReply)
-	SELECT build_sentence(t.link1, t.link2) FROM (
+	WITH recorded AS (SELECT link1, link2 FROM record_sentence(sentence) WHERE link2 <> ' ')
+	-- Most other ways of getting generateReply to inhibit build_sentence also cause
+	-- record_sentence to be optimized away by the query planner
+	SELECT CASE WHEN generateReply THEN build_sentence(t.link1, t.link2) ELSE NULL END FROM (
 		SELECT link1, link2 FROM recorded
 		ORDER BY random() LIMIT 1
 	) t
-$SQL$ LANGUAGE SQL VOLATILE
+$SQL$ LANGUAGE SQL VOLATILE;
 
 --SELECT * FROM record_and_generate('Also, I thought it was case-insensitive and ignored punctuation', FALSE);
